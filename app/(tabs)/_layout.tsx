@@ -1,37 +1,36 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router"
+import { View, Text } from "react-native"
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {useAuth} from '../../auth/AuthContext'
+import LoginScreen from '../../screens/LoginScreen'
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+	const { user } = useAuth(); // Get current user from AuthContext
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
+	if (!user) {
+		// If the user is not logged in, show the login screen or any alternative
+		return <LoginScreen />;
+	}
+	return (
+		<Tabs screenOptions={{
+			headerShown: false
+		}}>
+			<Tabs.Screen name="home" 
+			options={{
+				tabBarLabel: 'Home',
+				tabBarIcon: ({ color }) => <FontAwesome size={24} name="home" color={color} />,
+			}}/>
+			<Tabs.Screen name="favorites" 
+			options={{
+				tabBarLabel: 'Favorites',
+				tabBarIcon: ({ color }) => <FontAwesome size={24} name="heart" color={color} />,
+			}}/>
+			<Tabs.Screen name="settings" 
+			options={{
+				tabBarLabel: 'Settings',
+				tabBarIcon: ({ color }) => <FontAwesome size={24} name="cogs" color={color} />,
+			}}/>
+		</Tabs>
+)
 }
